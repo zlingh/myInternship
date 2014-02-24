@@ -1,0 +1,47 @@
+ 数据报告分为两部分
+一：
+使用pig进行计算model,resolution的数据报告
+1）首先，用deviceindex_model_stat.pig从集群上的dlilog跑出中间数据（含有字段model，resolution，flag，modelNum，launchNum）文件active_201212
+register '/home/xiarong/pigs/jars/elephant-bird-2.1.11.jar';
+register '/home/xiarong/pigs/jars/elephant-bird-examples-2.1.11.jar';
+import '/home/xiarong/pigs/import.pig';
+register 'udf_reso.py' using jython as reso_udf;
+dlilog = load '/dp/dailylaunch/201212*/compacted/*' using dli_loader;
+statlog = foreach dlilog generate umid, model, session_summary.launch_count as launches, reso_udf.getreso(resolution.height, resolution.width) as reso, SUBSTRING(umid,0,2) as flag;
+
+grpmodel = group statlog by (model, reso, flag);
+
+gnrd = foreach grpmodel {
+	users = distinct statlog.umid;
+	generate flatten(group), COUNT(users), SUM(statlog.launches) ;}
+
+set default_parallel 20;
+set job.name 'active_device_201212' ;
+store gnrd into '/tmp/device_index/active_device_201212_withreso' using PigStorage('\t');
+
+2）从active_201212里取样python get_modesamp.py data/active_201212 120111sample5得到12_0111sample5
+3）用python getoscpuand12_0111.py nov_device 12_0111sample4 out得到加入os后的数据
+4）pig -x local parseData_nojacknoversion.pig跑出结果
+
+
+二：
+计算，地域，联网方式的数据报告
+1）用deviceindex_province_stat从从集群上的dlilog跑出中间数据（含有字段province，model，access_type，access_subtype，launches）文件deviceindex_prostat_201212_rebuild
+register '/home/xiarong/pigs/jars/elephant-bird-2.1.11.jar';
+register '/home/xiarong/pigs/jars/elephant-bird-examples-2.1.11.jar';
+import '/home/xiarong/pigs/import.pig';
+
+dlilog = load '/dp/dailylaunch/2012092[1-7]/compacted/*' using dli_loader;
+
+fltd = filter dlilog by LOWER(country) == 'cn';
+
+gnrd = foreach fltd generate province as pro, model, access_type as access, access_subtype as subtype, session_summary.launch_count as launches;
+grpd = group gnrd by (pro, model, access, subtype);
+
+C = foreach grpd generate flatten(group), SUM(gnrd.launches);
+
+set default_parallel 10;
+set job.name 'proAccessStat' ;
+store C into '/tmp/device_index/pro_access_stat_201209' using PigStorage('\t');
+
+2）使用getproaccess.py跑出数据，python stat12.py nov_device deviceindex_prostat_201212_rebuild得到地域和联网方式的数据报告在proaccessout文件夹里

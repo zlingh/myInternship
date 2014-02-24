@@ -1,0 +1,21 @@
+Backend error message
+---------------------
+org.apache.pig.backend.executionengine.ExecException: ERROR 0: Scalar has more than one row in the output. 1st : (0018cade6ae9884012ae4dd01fb3f339,{(0018cade6ae9884012ae4dd01fb3f339,1)},{(0018cade6ae9884012ae4dd01fb3f339,7)}), 2nd :(00ef34a5d4f6eb33eaad8ad6018fd65d,{(00ef34a5d4f6eb33eaad8ad6018fd65d,12)},{(00ef34a5d4f6eb33eaad8ad6018fd65d,7)})
+	at org.apache.pig.impl.builtin.ReadScalars.exec(ReadScalars.java:111)
+	at org.apache.pig.backend.hadoop.executionengine.physicalLayer.expressionOperators.POUserFunc.getNext(POUserFunc.java:216)
+	at org.apache.pig.backend.hadoop.executionengine.physicalLayer.expressionOperators.POUserFunc.getNext(POUserFunc.java:258)
+	at org.apache.pig.backend.hadoop.executionengine.physicalLayer.PhysicalOperator.getNext(PhysicalOperator.java:316)
+	at org.apache.pig.backend.hadoop.executionengine.physicalLayer.relationalOperators.POForEach.processPlan(POForEach.java:332)
+	at org.apache.pig.backend.hadoop.executionengine.physicalLayer.relationalOperators.POForEach.getNext(POForEach.java:
+
+Pig Stack Trace
+---------------
+ERROR 0: Scalar has more than one row in the output. 1st : (0018cade6ae9884012ae4dd01fb3f339,{(0018cade6ae9884012ae4dd01fb3f339,1)},{(0018cade6ae9884012ae4dd01fb3f339,7)}), 2nd :(00ef34a5d4f6eb33eaad8ad6018fd65d,{(00ef34a5d4f6eb33eaad8ad6018fd65d,12)},{(00ef34a5d4f6eb33eaad8ad6018fd65d,7)})
+
+org.apache.pig.backend.executionengine.ExecException: ERROR 0: Scalar has more than one row in the output. 1st : (0018cade6ae9884012ae4dd01fb3f339,{(0018cade6ae9884012ae4dd01fb3f339,1)},{(0018cade6ae9884012ae4dd01fb3f339,7)}), 2nd :(00ef34a5d4f6eb33eaad8ad6018fd65d,{(00ef34a5d4f6eb33eaad8ad6018fd65d,12)},{(00ef34a5d4f6eb33eaad8ad6018fd65d,7)})
+	at org.apache.pig.impl.builtin.ReadScalars.exec(ReadScalars.java:111)
+	at org.apache.pig.backend.hadoop.executionengine.physicalLayer.expressionOperators.POUserFunc.getNext(POUserFunc.java:216)
+	at org.apache.pig.backend.hadoop.executionengine.physicalLayer.expressionOperators.POUserFunc.getNext(POUserFunc.java:258)
+	at org.apache.pig.backend.hadoop.executionengine.physicalLayer.PhysicalOperator.getNext(PhysicalOperator.java:316)
+	at org.apache.pig.backend.hadoop.executionengine.physicalLayer.relationalOperators.POForEach.processPlan(POForEach.java:332)
+================================================================================

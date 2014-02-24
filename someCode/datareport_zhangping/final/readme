@@ -1,0 +1,27 @@
+详细文档：https://docs.google.com/a/umeng.com/document/d/1MPHuNDU9FvIER3mXo-RX218DiKf7nmNLoxeM6S0w06E/edit
+一：
+包含5个代码文件：
+deviceindex_model_stat.pig
+deviceindex_province_osver_stat.pig
+os_model_jail_stat.pig
+compute.py
+join.sh
+
+(1).deviceindex_model_stat.pig：计算一个月的dlilog，得到数据model，reso，flag，modelNum, launchNum。
+
+(2).deviceindex_province_osver_stat.pig：计算每个月前中后各两天共6天的dlilog，得到数据os_version，province，model，access，subtype，modelNum，launchNum。sample如下：
+(3).os_model_jail_stat.pig：计算每个月前中后各3天共9天的rawlog，得到数据os，os_version，model，jailbreak，flag，modelNum。sample如下：
+(4).compute.py：用上面pig得到数据，计算得到数据报告所需的数据，包含getdevicels()，proAccessVer()，jaifun()，modelResfun()这几个主要函数。
+
+4.1  getdevicels()：用os_model_jail_stat.pig得到的数据计算得ios和windowsphone的设备列表，得到两个文件iosdevice和wpdevice，为其它函数从model得到对应的os所用；
+4.2  proAccessVer()：用deviceindex_province_osver_stat.pig得到的数据，计算得到各平台，城市，联网方式，系统版本号的分布；
+4.3  jaifun()：用os_model_jail_stat.pig得到的数据，计算得到IOS平台的越狱情况分布；
+4.4  modelResfun()：用deviceindex_model_stat.pig得到的数据，计算得到各平台，model，分辨率的分布。
+
+(5).join.sh：把上面4个文件串起来，首先执行pig脚本，然后把pig的结果取回，放到当前文件夹下data目录下，然后用compute.py计算。
+
+二：
+运行方法：
+    比如要计算2012年12月份umeng指数的数据，把这5个代码文件复制到dp0上的一个目录下，然后在shell 中输入 sh join.sh 201212
+程序运行结果：
+    umeng指数数据在当前文件夹下的dataout里，还会在当前文件夹里生成data目录，和wpdevice和iosdevice两个文件，这几个中间文件。
